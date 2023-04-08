@@ -15,23 +15,48 @@ namespace HelloWorld
             string[] fls; 
             string[] hostnames;
              
-            fl = File.ReadAllLines(file2Convert).ToList();
+            // fl = File.ReadAllLines(file2Convert).ToList();
+            fls = File.ReadAllLines(file2Convert);
             Console.WriteLine("IPL just read scsfully");
 
-            hostname = File.ReadAllLines(file0IPlist).ToList();
+            // hostname = File.ReadAllLines(file0IPlist).ToList();
+            hostnames = File.ReadAllLines(file0IPlist);
             Console.WriteLine("hostnames just read scsfully");
 
 
-            for (int i=0;i<fl.Count;i++) 
+            // for (int i=0;i<fl.Count;i++) 
+            for (int i=0;i<fls.Length;i++) 
             {
-                string str = fl[i];
-                for(int j=0;j<hostname.Count;j++)
+                string str = fls[i];
+                
+                bool found = false;
+                for(int j=0;j<hostnames.Length;j++)
                 {
-                    int x = hostname[j].IndexOf(fl[i]);
-                    if (x==-1){str += ", Not found";  continue;}
-                    else {str = hostname[j];  Console.WriteLine(str); continue;}
+                    // int x = hostnames[j].IndexOf(fls[i]);
+                    // if (x==-1)
+                    //     continue;
+                    string[] comparestr = hostnames[j].Split(',');
+                    if(comparestr[0] != fls[i])
+                        continue;
+                    else {
+                        str = hostnames[j]; found = true; break;}
                 }   
+
+
+                if(found)
+                    fls[i] = str;
+                else
+                    fls[i]+=", N/A";
+                    
+                Console.WriteLine(str);
             }
+
+            try{
+                File.WriteAllLines("final.csv",fls);
+                Console.WriteLine("file written done");
+            }
+            catch(Exception e)
+            {Console.WriteLine(e.Message);}
         }
     }
 }
